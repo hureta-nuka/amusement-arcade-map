@@ -1,0 +1,52 @@
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+
+  &-header {
+    background: $primary-gradient;
+    color: white;
+    padding: $spacing-lg $spacing-2xl;
+    box-shadow: $shadow-sm;
+
+    h1 {
+      font-size: $font-3xl;
+      font-weight: 600;
+    }
+
+    @include mobile {
+      h1 {
+        font-size: $font-2xl;
+      }
+    }
+  }
+
+  &-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+}
+
