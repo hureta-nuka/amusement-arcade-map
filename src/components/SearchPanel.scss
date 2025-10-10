@@ -1,0 +1,128 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.search-panel {
+  width: 320px;
+  background: $bg-secondary;
+  border-right: 1px solid $border-color;
+  padding: $spacing-xl;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+
+  @include mobile {
+    width: 100%;
+    max-height: 250px;
+    border-right: none;
+    border-bottom: 1px solid $border-color;
+  }
+}
+
+.search-section,
+.filter-section {
+  h2 {
+    font-size: $font-lg;
+    font-weight: 600;
+    margin-bottom: $spacing-md;
+    color: $text-primary;
+  }
+}
+
+.search-input {
+  width: 100%;
+  padding: $spacing-md;
+  border: 2px solid $border-color;
+  border-radius: $border-radius-sm;
+  font-size: $font-base;
+  transition: border-color $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.tag-button {
+  padding: $spacing-sm $spacing-lg;
+  border: 2px solid $border-color;
+  background: $bg-primary;
+  color: $text-primary;
+  border-radius: $border-radius-lg;
+  font-size: $font-sm;
+  cursor: pointer;
+  transition: all $transition-fast;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  .tag-icon {
+    font-size: 1.1em;
+    transition: transform $transition-fast;
+  }
+
+  &:hover {
+    border-color: $primary-color;
+    background: $bg-hover;
+    color: $primary-color;
+    transform: translateY(-2px);
+
+    .tag-icon {
+      transform: scale(1.2);
+    }
+  }
+
+  &.active {
+    @include gradient-button;
+    border-color: transparent;
+
+    .tag-icon {
+      animation: pulse 1s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.clear-button {
+  padding: $spacing-md;
+  background: $danger-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius-sm;
+  font-size: $font-md;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: $danger-hover;
+  }
+}
+
+.info-section {
+  margin-top: auto;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-color;
+}
+
+.info-text {
+  font-size: $font-sm;
+  color: $text-secondary;
+  line-height: 1.5;
+}
+
