@@ -1,0 +1,46 @@
+@use './variables' as *;
+
+// レスポンシブ用のmixin
+@mixin mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+// フレックスセンター
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// カード風スタイル
+@mixin card {
+  background: $bg-primary;
+  border-radius: $border-radius-sm;
+  box-shadow: $shadow-sm;
+}
+
+// ホバーエフェクト
+@mixin hover-effect {
+  transition: all $transition-fast;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+// グラデーションボタン
+@mixin gradient-button {
+  background: $primary-gradient;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity $transition-fast;
+  
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
