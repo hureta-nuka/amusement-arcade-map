@@ -120,11 +120,18 @@ npm run test:coverage
 
 ### CI/CD
 
-GitHub Actionsで以下を自動実行：
+GitHub Actionsで2つのワークフローを自動実行：
+
+**1. Test ワークフロー (test.yml)**
+- トリガー: プルリクエスト & mainブランチへのプッシュ
 - リンターチェック (`npm run lint`)
 - ユニットテスト (`npm test`)
 - ビルド確認
-- GitHub Pagesへのデプロイ
+
+**2. Deploy ワークフロー (deploy.yml)**
+- トリガー: mainブランチへのプッシュのみ
+- ビルド
+- GitHub Pagesへの自動デプロイ
 
 ## 🎨 スタイリング (SCSS)
 
