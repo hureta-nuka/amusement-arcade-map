@@ -1,14 +1,18 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+import { useEffect } from 'react'
 import L from 'leaflet'
-import { Arcade, ArcadeTag } from '../types/arcade'
+import 'leaflet.markercluster'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import { Arcade } from '../types/arcade'
 import './Map.scss'
 
-// ゲームアーケードっぽいカスタムアイコンを作成
+// ポラリスコードのゲームセンターアイコンを作成
 const createGameIcon = () => {
   return L.divIcon({
     html: `
       <div class="custom-marker">
-        <div class="marker-icon">🕹️</div>
+        <div class="marker-icon">🎮</div>
       </div>
     `,
     className: 'custom-marker-container',
@@ -20,13 +24,70 @@ const createGameIcon = () => {
 
 const gameIcon = createGameIcon()
 
-const tagIcons: Record<ArcadeTag, string> = {
-  '音ゲー': '🎵',
-  '格ゲー': '🥊',
-  'クレーンゲーム': '🦾',
-  'レトロゲーム': '👾',
-  'メダルゲーム': '🪙',
-  'プライズ': '🧸'
+// クラスタリングコンポーネント
+function MarkerCluster({ arcades }: { arcades: Arcade[] }) {
+  const map = useMap()
+
+  useEffect(() => {
+    // 既存のマーカーをクリア
+    map.eachLayer((layer) => {
+      if (layer instanceof L.MarkerClusterGroup) {
+        map.removeLayer(layer)
+      }
+    })
+
+    // クラスターグループを作成
+    const clusterGroup = L.markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50, // クラスター化する半径（ピクセル）
+      spiderfyOnMaxZoom: true, // 最大ズーム時にスパイダー表示
+      showCoverageOnHover: false, // ホバー時のカバレッジ表示を無効
+      zoomToBoundsOnClick: true, // クリック時にズーム
+      iconCreateFunction: (cluster) => {
+        const count = cluster.getChildCount()
+        let size = 'small'
+        if (count > 100) size = 'large'
+        else if (count > 20) size = 'medium'
+
+        return L.divIcon({
+          html: `<div class="marker-cluster marker-cluster-${size}">${count}</div>`,
+          className: 'marker-cluster-container',
+          iconSize: L.point(40, 40)
+        })
+      }
+    })
+
+    // マーカーを追加
+    arcades.forEach((arcade) => {
+      const marker = L.marker([parseFloat(arcade.latitude), parseFloat(arcade.longitude)], {
+        icon: gameIcon
+      })
+
+      // ポップアップを追加
+      const popupContent = `
+        <div class="popup-content">
+          <h3>${arcade.name}</h3>
+          <p class="address">📍 ${arcade.address}</p>
+          ${arcade.tel ? `<p class="tel">📞 ${arcade.tel}</p>` : ''}
+          ${arcade.operation_time ? `<p class="hours">⏰ ${arcade.operation_time}</p>` : ''}
+          ${arcade.holiday ? `<p class="holiday">📅 定休日: ${arcade.holiday}</p>` : ''}
+          ${arcade.access ? `<p class="access">🚶 ${arcade.access}</p>` : ''}
+        </div>
+      `
+      marker.bindPopup(popupContent)
+      clusterGroup.addLayer(marker)
+    })
+
+    // クラスターグループをマップに追加
+    map.addLayer(clusterGroup)
+
+    // クリーンアップ
+    return () => {
+      map.removeLayer(clusterGroup)
+    }
+  }, [map, arcades])
+
+  return null
 }
 
 interface MapProps {
@@ -45,34 +106,7 @@ function Map({ arcades }: MapProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {arcades.map((arcade) => (
-          <Marker
-            key={arcade.id}
-            position={[arcade.latitude, arcade.longitude]}
-            icon={gameIcon}
-          >
-            <Popup>
-              <div className="popup-content">
-                <h3>{arcade.name}</h3>
-                <p className="address">{arcade.address}</p>
-                {arcade.description && (
-                  <p className="description">{arcade.description}</p>
-                )}
-                {arcade.openingHours && (
-                  <p className="hours">⏰ {arcade.openingHours}</p>
-                )}
-                <div className="tags">
-                  {arcade.tags.map((tag, index) => (
-                    <span key={index} className="tag">
-                      <span className="tag-icon">{tagIcons[tag as ArcadeTag]}</span>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        <MarkerCluster arcades={arcades} />
       </MapContainer>
     </div>
   )

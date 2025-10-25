@@ -1,13 +1,15 @@
 export interface Arcade {
-  id: number;
   name: string;
+  operation_time: string;
+  holiday: string;
+  latitude: string;
+  longitude: string;
+  tel: string;
   address: string;
-  latitude: number;
-  longitude: number;
-  description?: string;
-  tags: string[];
-  openingHours?: string;
+  access: string;
 }
 
-export type ArcadeTag = '音ゲー' | '格ゲー' | 'クレーンゲーム' | 'レトロゲーム' | 'メダルゲーム' | 'プライズ';
+export interface ArcadesData {
+  shops: Arcade[];
+}
 
