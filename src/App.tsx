@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🎮 ポラリスコード店舗マップ</h1>
+        <h1>ポラリスコード店舗マップ</h1>
       </header>
       <div className="app-content">
         <SearchPanel

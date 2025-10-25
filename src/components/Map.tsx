@@ -7,22 +7,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import { Arcade } from '../types/arcade'
 import './Map.scss'
 
-// ポラリスコードのゲームセンターアイコンを作成
-const createGameIcon = () => {
-  return L.divIcon({
-    html: `
-      <div class="custom-marker">
-        <div class="marker-icon">🎮</div>
-      </div>
-    `,
-    className: 'custom-marker-container',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
-  })
-}
-
-const gameIcon = createGameIcon()
+// 標準のLeafletマーカーアイコンを使用
 
 // クラスタリングコンポーネント
 function MarkerCluster({ arcades }: { arcades: Arcade[] }) {
@@ -59,9 +44,7 @@ function MarkerCluster({ arcades }: { arcades: Arcade[] }) {
 
     // マーカーを追加
     arcades.forEach((arcade) => {
-      const marker = L.marker([parseFloat(arcade.latitude), parseFloat(arcade.longitude)], {
-        icon: gameIcon
-      })
+      const marker = L.marker([parseFloat(arcade.latitude), parseFloat(arcade.longitude)])
 
       // ポップアップを追加
       const popupContent = `

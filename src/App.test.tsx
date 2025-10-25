@@ -5,7 +5,7 @@ import App from './App'
 describe('App', () => {
   it('アプリのタイトルが表示される', () => {
     render(<App />)
-    expect(screen.getByText('🎮 ポラリスコード店舗マップ')).toBeInTheDocument()
+    expect(screen.getByText('ポラリスコード店舗マップ')).toBeInTheDocument()
   })
 
   it('検索パネルが表示される', () => {
