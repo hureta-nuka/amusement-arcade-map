@@ -76,6 +76,24 @@
     margin-bottom: $spacing-sm;
   }
 
+  .tel {
+    font-size: $font-sm;
+    color: $text-secondary;
+    margin-bottom: $spacing-sm;
+  }
+
+  .holiday {
+    font-size: $font-sm;
+    color: $text-tertiary;
+    margin-bottom: $spacing-sm;
+  }
+
+  .access {
+    font-size: $font-sm;
+    color: $text-secondary;
+    margin-bottom: $spacing-sm;
+  }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -97,6 +115,50 @@
     .tag-icon {
       font-size: 1em;
     }
+  }
+}
+
+// クラスターアイコンスタイル
+.marker-cluster-container {
+  background: transparent;
+  border: none;
+}
+
+.marker-cluster {
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  &.marker-cluster-small {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    width: 40px;
+    height: 40px;
+  }
+
+  &.marker-cluster-medium {
+    background: linear-gradient(135deg, #FF9800, #F57C00);
+    width: 50px;
+    height: 50px;
+    font-size: 16px;
+  }
+
+  &.marker-cluster-large {
+    background: linear-gradient(135deg, #F44336, #D32F2F);
+    width: 60px;
+    height: 60px;
+    font-size: 18px;
   }
 }
 
