@@ -5,7 +5,7 @@ import App from './App'
 describe('App', () => {
   it('アプリのタイトルが表示される', () => {
     render(<App />)
-    expect(screen.getByText('🎮 日本ゲームセンターマップ')).toBeInTheDocument()
+    expect(screen.getByText('🎮 ポラリスコード店舗マップ')).toBeInTheDocument()
   })
 
   it('検索パネルが表示される', () => {
@@ -13,19 +13,14 @@ describe('App', () => {
     expect(screen.getByPlaceholderText('店名や住所で検索...')).toBeInTheDocument()
   })
 
-  it('カテゴリーフィルターが表示される', () => {
+  it('ポラリスコード店舗検索のタイトルが表示される', () => {
     render(<App />)
-    expect(screen.getByText('🏷️ カテゴリー')).toBeInTheDocument()
+    expect(screen.getByText('🔍 ポラリスコード店舗検索')).toBeInTheDocument()
   })
 
-  it('すべてのカテゴリータグが表示される', () => {
+  it('店舗情報が表示される', () => {
     render(<App />)
-    expect(screen.getByText('音ゲー')).toBeInTheDocument()
-    expect(screen.getByText('格ゲー')).toBeInTheDocument()
-    expect(screen.getByText('クレーンゲーム')).toBeInTheDocument()
-    expect(screen.getByText('レトロゲーム')).toBeInTheDocument()
-    expect(screen.getByText('メダルゲーム')).toBeInTheDocument()
-    expect(screen.getByText('プライズ')).toBeInTheDocument()
+    expect(screen.getByText(/ポラリスコードが設置されているゲームセンター店舗を掲載しています/)).toBeInTheDocument()
   })
 })
 
