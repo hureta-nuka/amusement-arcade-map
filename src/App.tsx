@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import Map from './components/Map'
 import SearchPanel from './components/SearchPanel'
 import arcadesData from './data/arcades.json'
-import { ArcadesData } from './types/arcade'
+import { ArcadesData, Arcade } from './types/arcade'
 import './App.scss'
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
     lat: number;
     lng: number;
   } | null>(null)
-  const [nearestArcade, setNearestArcade] = useState<any>(null)
+  const [nearestArcade, setNearestArcade] = useState<Arcade | null>(null)
   const [fitParams, setFitParams] = useState<{
     center: [number, number];
     zoom: number;
