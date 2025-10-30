@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, CircleMarker } from 'react-leaflet'
 import { useEffect } from 'react'
 import L from 'leaflet'
 import 'leaflet.markercluster'
@@ -73,22 +73,46 @@ function MarkerCluster({ arcades }: { arcades: Arcade[] }) {
   return null
 }
 
-interface MapProps {
-  arcades: Arcade[]
+function MapAutoCentering({ center, zoom }: { center: [number, number], zoom: number }) {
+  const map = useMap()
+  useEffect(() => {
+    map.setView(center, zoom, { animate: false })
+  }, [center, zoom, map])
+  return null
 }
 
-function Map({ arcades }: MapProps) {
+interface MapProps {
+  arcades: Arcade[]
+  center?: [number, number]
+  zoom?: number
+  currentPosition?: {
+    lat: number
+    lng: number
+  } | null
+}
+
+// カスタムズーム・現在地コントロールは削除
+
+function Map({ arcades, center, zoom, currentPosition }: MapProps) {
   // 日本の中心（東京周辺）
-  const center: [number, number] = [36.5, 138.0]
-  const zoom = 6
+  const defaultCenter: [number, number] = [36.5, 138.0]
+  const defaultZoom = 6
 
   return (
     <div className="map-container">
-      <MapContainer center={center} zoom={zoom} className="map">
+      <MapContainer center={center || defaultCenter} zoom={zoom || defaultZoom} className="map">
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {center && zoom && <MapAutoCentering center={center} zoom={zoom} />}
+        {currentPosition && (
+          <CircleMarker
+            center={[currentPosition.lat, currentPosition.lng]}
+            radius={8}
+            pathOptions={{ color: '#2196f3', fillColor: '#2196f3', fillOpacity: 0.8 }}
+          />
+        )}
         <MarkerCluster arcades={arcades} />
       </MapContainer>
     </div>
