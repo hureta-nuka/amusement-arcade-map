@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import Map from './components/Map'
 import SearchPanel from './components/SearchPanel'
 import arcadesData from './data/arcades.json'
-import { ArcadesData, Arcade } from './types/arcade'
+import { ArcadesData } from './types/arcade'
 import './App.scss'
 
 function App() {
@@ -12,12 +12,12 @@ function App() {
     lat: number;
     lng: number;
   } | null>(null)
-  const [nearestArcade, setNearestArcade] = useState<Arcade | null>(null)
-  const [fitParams, setFitParams] = useState<{
-    center: [number, number];
-    zoom: number;
-  } | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
+  // 初回のみ現在地にズームするための初期ビュー
+  const [initialView, setInitialView] = useState<{
+    center: [number, number]
+    zoom: number
+  } | null>(null)
 
   // ←ここでarcades群を宣言
   const data = arcadesData as ArcadesData
@@ -48,55 +48,19 @@ function App() {
     }
   }, [])
 
-  // 現在地が更新されたら、最寄りの店舗を探索
+  // ページ初回表示時のみ現在地へズーム
   useEffect(() => {
-    if (currentPosition) {
-      let minDist = Infinity
-      let closest = null
-      for (const arcade of arcades) {
-        const dist = Math.sqrt(
-          Math.pow(parseFloat(arcade.latitude) - currentPosition.lat, 2) +
-          Math.pow(parseFloat(arcade.longitude) - currentPosition.lng, 2)
-        )
-        if (dist < minDist) {
-          minDist = dist
-          closest = arcade
-        }
-      }
-      setNearestArcade(closest)
-      // デバッグ表示
-      console.log('現在地', currentPosition, '最寄り', closest)
-    } else {
-      setNearestArcade(null)
+    if (!initialView && currentPosition) {
+      setInitialView({
+        center: [currentPosition.lat, currentPosition.lng],
+        zoom: 13,
+      })
     }
-  }, [currentPosition, arcades])
+  }, [currentPosition, initialView])
 
-  // 現在地と最寄り店舗が両方とも表示範囲に収まるズーム・中心地を計算してMapへcenter・zoomを渡す。必要によりboundsからcenter/zoomを算出（lat,lng2点が両方propsで与えられればよい）。zoom算出にreact-leafletのmapRef活用や固定ズームも許容。
-  useEffect(() => {
-    if (currentPosition && nearestArcade) {
-      // 両者が近ければzoom大きめ・遠ければzoom小さめとする
-      const latlngs = [
-        [currentPosition.lat, currentPosition.lng],
-        [parseFloat(nearestArcade.latitude), parseFloat(nearestArcade.longitude)]
-      ]
-      // 中心を2点の中間に
-      const center: [number, number] = [
-        (latlngs[0][0] + latlngs[1][0]) / 2,
-        (latlngs[0][1] + latlngs[1][1]) / 2
-      ]
-      // 距離からzoomを概算 決め打ちでも可（距離に応じる場合）
-      const latDiff = Math.abs(latlngs[0][0] - latlngs[1][0])
-      const lngDiff = Math.abs(latlngs[0][1] - latlngs[1][1])
-      const maxDiff = Math.max(latDiff, lngDiff)
-      let zoom = 13
-      if (maxDiff > 5) zoom = 8
-      else if (maxDiff > 1) zoom = 10
-      else if (maxDiff > 0.2) zoom = 12
-      setFitParams({ center, zoom })
-    } else {
-      setFitParams(null)
-    }
-  }, [currentPosition, nearestArcade])
+  // 現在地更新時はマップを動かさない
+
+  // center/zoom は現在地更新時に地図を動かさないため計算しない
 
   // 現在地に戻るボタン押下用ハンドラ 削除
 
@@ -125,8 +89,8 @@ function App() {
           onSearchChange={setSearchText}
         />
         <Map arcades={filteredArcades}
-             center={fitParams ? fitParams.center : undefined}
-             zoom={fitParams ? fitParams.zoom : undefined}
+             center={initialView ? initialView.center : undefined}
+             zoom={initialView ? initialView.zoom : undefined}
              currentPosition={currentPosition}
         />
       </div>
